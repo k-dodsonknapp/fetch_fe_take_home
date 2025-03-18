@@ -3,14 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import getCookie from "../../utils/get-cookie";
+import { useState } from "react";
+import useFetch from "../app/Hooks/useFetch";
 // import getCookie from "../../utils/get-cookie";
 
 export function LoginForm({ className, ...props }) {
   const navigate = useNavigate();
-  // const fetchAccess = getCookie("fetch-access")
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
     name: "",
     email: "",
@@ -24,52 +23,23 @@ export function LoginForm({ className, ...props }) {
     });
   };
 
+  const [{ data, loading, error }, submitLoginPath] = useFetch();
+
   const setAuthCookie = () => {
-    console.log(new Date()); // Log current time
     document.cookie = "fetch-access=1; path=/; max-age=3600";
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch(
-        "https://frontend-take-home-service.fetch.com/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(credentials),
-          credentials: "include",
-        }
-      );
-      console.log(res);
-      if (res.ok) {
-        setAuthCookie();
-        navigate("/");
-      } else {
-        console.error("Something went wrong");
-      }
-    } catch (err) {
-      console.error("Login failed:", err);
+    setAuthCookie();
+    submitLoginPath("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+    });
+    if (!data) {
+      navigate("/");
     }
   };
-
-  // const handleDemoLogin = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     navigate("/");
-  //   } catch (err) {
-  //     console.log("Demo login failed");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (authed) {
-  //     console.log("HELLO")
-  //     navigate("/")
-  //   }
-  // }, [authed])
 
   return (
     <form
@@ -110,12 +80,8 @@ export function LoginForm({ className, ...props }) {
             onChange={handleChange}
           />
         </div>
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={loading}
-        >
-          {loading ? "Checking Doggy-base..." : "🐶 Find Forever Friend"}
+        <Button type="submit" className="w-full">
+          {loading ? "Finding friend..." : "🐶 Find forever friend"}
         </Button>
       </div>
     </form>

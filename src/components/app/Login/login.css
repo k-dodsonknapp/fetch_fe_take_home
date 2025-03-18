@@ -1,0 +1,108 @@
+.something {
+    height: 10px;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    background-color: lime;
+    width: 100%;
+    scale: 0 1;
+    transform-origin: left;
+    animation: scroll-watcher linear;
+    animation-timeline: scroll(y);
+}
+
+@keyframes scroll-watcher {
+    to {
+        scale: 1 1;
+    }
+}
+
+.cont {
+    .img-wrapper {
+        height: 400px;
+        width: 600px;
+
+        .image {
+            animation: fade-in linear;
+            animation-timeline: view();
+            animation-range-start: contain;
+            animation-range-end: contain;
+        }
+    }
+
+    .scroller {
+        max-width: 600px;
+    }
+
+    .scroller__inner {
+        padding-block: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .list {
+        margin: 0;
+        padding-inline: 0;
+        list-style: none;
+    }
+
+    .list img {
+        padding: 1rem;
+        background: var(--clr-primary-400);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem -0.25rem var(--clr-primary-900);
+    }
+    .scroller {
+        outline: 2px solid lime;
+
+    }
+
+    .scroller[data-animated="true"] {
+        border: 3px solid lime;
+        overflow: hidden;
+        mask: linear-gradient(90deg,
+                transparent,
+                white 20%,
+                white 80%,
+                transparent);
+        --webkit-mask: linear-gradient(90deg,
+                transparent,
+                white 20%,
+                white 80%,
+                transparent);
+
+    }
+
+    .scroller[data-animated="true"] .scroller__inner {
+        flex-wrap: nowrap;
+        animation: scroll var(--_animation-duration, 10s) var(--_animation-direction, forwards) linear infinite;
+        width: fit-content;
+    }
+
+    .scroller[data-direction="right"] {
+        --_animation-direction: reverse;
+    }
+
+    .scroller[data-direction="left"] {
+        --_animation-direction: forwards;
+    }
+}
+
+@keyframes scroll {
+    to {
+        transform: translate(calc(-50% - 0.5rem));
+    }
+}
+
+@keyframes fade-in {
+    from {
+        scale: .8;
+        opacity: 0;
+    }
+
+    to {
+        scale: 1;
+        opacity: 1;
+    }
+}
